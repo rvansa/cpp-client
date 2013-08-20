@@ -40,7 +40,7 @@ include (CTest)
 include_directories ("${CMAKE_CURRENT_SOURCE_DIR}/include" "${CMAKE_CURRENT_SOURCE_DIR}/src")
 
 if (CMAKE_COMPILER_IS_GNUCXX)
-   set (COMPILER_FLAGS "-fvisibility=hidden -fvisibility-inlines-hidden")
+   set (COMPILER_FLAGS "-fvisibility=hidden -fvisibility-inlines-hidden -fPIC")
 # TODO: ASAP!  fix swig call for -Werror 
    set (WARNING_FLAGS
         "-pedantic -Wall -Wextra -Wno-shadow -Wpointer-arith -Wcast-qual -Wcast-align -Wno-long-long -Wvolatile-register-var -Winvalid-pch -Wno-system-headers -Woverloaded-virtual -Wshadow -Wl,--no-undefined")
@@ -72,7 +72,7 @@ endif(HOTROD_WINAPI)
 
 
 add_library (
-  hotrod SHARED
+  hotrod_object OBJECT
   src/hotrod/api/RemoteCacheManager.cpp
   src/hotrod/api/RemoteCacheBase.cpp
   src/hotrod/api/exceptions.cpp
@@ -110,8 +110,13 @@ add_library (
   src/hotrod/impl/transport/tcp/RoundRobinBalancingStrategy.cpp
   ${platform_sources}
   )
-target_link_libraries (hotrod ${platform_libs})
 
+
+add_library (hotrod SHARED $<TARGET_OBJECTS:hotrod_object>)
+add_library (hotrod_static STATIC $<TARGET_OBJECTS:hotrod_object>)
+
+target_link_libraries (hotrod ${platform_libs})
+target_link_libraries (hotrod_static ${platform_libs})
 
 # TESTS
 

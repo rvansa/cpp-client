@@ -9,6 +9,8 @@
 *.cmake
 *.tcl
 *.cxx
+*.lib
+*.a
 
 # Packages #
 ############
