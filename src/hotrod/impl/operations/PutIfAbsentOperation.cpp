@@ -21,12 +21,17 @@ PutIfAbsentOperation::PutIfAbsentOperation(
 
 hrbytes PutIfAbsentOperation::executeOperation(Transport& transport)
 {
-    uint8_t status = sendPutOperation(
+    TRACE("Executing PutIfAbsent");
+    TRACEBYTES("key = ", key);
+    TRACEBYTES("value = ", value);
+	uint8_t status = sendPutOperation(
         transport, PUT_IF_ABSENT_REQUEST, PUT_IF_ABSENT_RESPONSE);
     hrbytes previousValue;
     if (status == NO_ERROR_STATUS || status == NOT_PUT_REMOVED_REPLACED_STATUS) {
         previousValue =
             AbstractKeyValueOperation<hrbytes>::returnPossiblePrevValue(transport);
+    } else {
+    	TRACE("Wrong status: %d", status);
     }
     return previousValue;
 }

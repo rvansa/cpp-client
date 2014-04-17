@@ -57,7 +57,10 @@ template<class T> class AbstractKeyOperation : public RetryOnFailureOperation<T>
     hrbytes returnPossiblePrevValue(transport::Transport& transport) {
         hrbytes result;
         if (hasForceReturn(RetryOnFailureOperation<T>::flags)) {
-            result = transport.readArray();
+            TRACEBYTES("Return value = ", result);
+        	result = transport.readArray();
+        } else {
+        	TRACE("No return value");
         }
         return result;
     }
